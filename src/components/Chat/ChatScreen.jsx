@@ -5,6 +5,39 @@ import MessageCard from './MessageCard'
 
 const ChatScreen = () => {
   const { name } = useParams()
+//   const [ messages, setMessages ] = useState([])
+
+//   const allMessages = () => { 
+//     fetch('http://localhost:4000/', { 
+//         method: "POST", 
+//         headers: {
+//             "Content-Type": "application/json",
+//             "Authorization": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImlhdCI6MTY2MDU3NDg4NX0.3riXeC-FVHVz8dHwdvQ80EijqrLOP-MEHQsej60Jgnk"
+//         },
+//         body: JSON.stringify({
+//             query: `
+//                 query MessagesByUser($receiverId: Int!) {
+//                     messagesByUser(receiverId: $receiverId) {
+//                     id
+//                     text
+//                     receiverId
+//                     senderId
+//                     createdAt
+//                     }
+//                 }
+//             `,
+//             variables: {
+//                 "receiverId": 3
+//             }
+//         })
+//     })
+//     .then( res => res.json())
+//     .then(data => console.log(data))
+//   }
+
+//   useEffect(() => { 
+//     allMessages()
+//   }, [])
 
   return (
     <Box

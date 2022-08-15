@@ -1,11 +1,22 @@
 import React, { useState, useRef } from 'react'
-import { Box, Card, Stack, Typography, Button, TextField } from '@mui/material'
+import { Box, Alert, Card, Stack, Typography, Button, TextField, CircularProgress } from '@mui/material'
+import { useMutation } from '@apollo/client'
+import { SIGNUP_USER } from '../../graphql/mutations'
 
-const SignUp = () => {
+const AuthForm = () => {
     const [ login, setLogin ] = useState(true)
     const [ formData, setFormData ] = useState({})
     const authForm = useRef(null)
+    const [signupUser, { data: signupData, loading:l1, error: e1 }] = useMutation(SIGNUP_USER)
 
+    if (l1) {
+        return (
+            <Box sx={{ display: 'flex', height: '100vh', alignItems: 'center', justifyContent: 'center'}}>
+                <CircularProgress />
+                <Typography variant="h6">Authenticating....</Typography>
+            </Box>
+        )
+    }
     const handleChange = (e) => {
         setFormData(
             {
@@ -17,7 +28,15 @@ const SignUp = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault()
-        console.log(formData)
+        if (login) {
+
+        } else {
+            signupUser({
+                variables: {
+                    newUser: formData
+                }
+            })
+        }
     }
 
   return (
@@ -36,6 +55,13 @@ const SignUp = () => {
                 spacing={2}
                 sx={{ }}
             >
+                {
+                    signupData && <Alert severity='success'>Sign up Successful!</Alert>
+                }
+                {
+                    e1 && <Alert severity='error'>{e1.message}</Alert>
+                }
+
                 <Typography variant="h4" sx={{marginBottom: "8px"}}>
                     Welcome to Lifly
                 </Typography>
@@ -83,10 +109,7 @@ const SignUp = () => {
                             </p>: 
                             <p>Already have an account? 
                                 <span style={{color: "#0071FF", marginLeft: "4px"}}>Sign In</span> 
-                            </p> 
-                        
-                                
-                                
+                            </p>    
                     }
                 </Typography>
             </Stack>
@@ -95,4 +118,4 @@ const SignUp = () => {
   )
 }
 
-export default SignUp
+export default AuthForm
