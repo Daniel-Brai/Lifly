@@ -22,8 +22,8 @@ const SideBar = () => {
       <Typography variant="h6">Chat</Typography>
       <Divider/>
       {
-        users.map((item) => { 
-          return <ProfileCard item={item}/>
+        users.map((item, id) => { 
+          return <ProfileCard key={item.id} item={item}/>
         })
       }
     </Box>
