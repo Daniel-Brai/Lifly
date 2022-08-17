@@ -17,3 +17,15 @@ mutation SignIn($userSignIn: READ_USER!) {
     }
   }
 `
+
+export const SEND_MESSAGE =gql`
+mutation CreateMessage($receiverId: Int!, $text: String!) {
+  createMessage(receiverId: $receiverId, text: $text) {
+    id
+    text
+    receiverId
+    senderId
+    createdAt
+  }
+}
+`

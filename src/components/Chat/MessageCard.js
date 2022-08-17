@@ -12,7 +12,7 @@ const MessageCard = ({text, date, direction}) => {
                 {text}
             </Typography>
             <Typography variant="caption">
-                {date}
+                { date }
             </Typography>
         </Box>
     </Box>

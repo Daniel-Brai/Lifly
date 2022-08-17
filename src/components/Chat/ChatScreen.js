@@ -1,43 +1,39 @@
-import { Box, Avatar, Typography, AppBar, Toolbar, TextField } from '@mui/material'
-import React from 'react'
+import { Box, Avatar, Typography, AppBar, Toolbar, TextField, Stack } from '@mui/material'
+import React, { useState } from 'react'
 import { useParams } from 'react-router-dom'
+import { useQuery, useMutation } from '@apollo/client'
 import MessageCard from './MessageCard'
+import { GET_USER_MESSAGES } from '../../graphql/queries'
+import { SEND_MESSAGE } from '../../graphql/mutations'
+import SendIcon from '@mui/icons-material/Send'
 
 const ChatScreen = () => {
-  const { name } = useParams()
-//   const [ messages, setMessages ] = useState([])
+  const { id, name } = useParams()
+  const [text, setText] = useState("")
+  const [messages, setMessages] = useState([])
+  const { data, loading, error } = useQuery(GET_USER_MESSAGES, {
+    variables: { 
+        receiverId: Number(id)
+    },
+    onCompleted(data) {
+        setMessages(data.messagesByUser)
+    }
+  })
 
-//   const allMessages = () => { 
-//     fetch('http://localhost:4000/', { 
-//         method: "POST", 
-//         headers: {
-//             "Content-Type": "application/json",
-//             "Authorization": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImlhdCI6MTY2MDU3NDg4NX0.3riXeC-FVHVz8dHwdvQ80EijqrLOP-MEHQsej60Jgnk"
-//         },
-//         body: JSON.stringify({
-//             query: `
-//                 query MessagesByUser($receiverId: Int!) {
-//                     messagesByUser(receiverId: $receiverId) {
-//                     id
-//                     text
-//                     receiverId
-//                     senderId
-//                     createdAt
-//                     }
-//                 }
-//             `,
-//             variables: {
-//                 "receiverId": 3
-//             }
-//         })
-//     })
-//     .then( res => res.json())
-//     .then(data => console.log(data))
-//   }
+  const [sendMessage] = useMutation(SEND_MESSAGE, {
+    onCompleted(data) { 
+        setMessages((prevMsgs) => [...prevMsgs, data.createMessage])
+    }
+  })
 
-//   useEffect(() => { 
-//     allMessages()
-//   }, [])
+  const dateFormater = (date) => {
+    const _Date = new Date(date)
+    return _Date.toLocaleTimeString()
+  }
+
+  if (error) {
+    console.log(error.message)
+  }
 
   return (
     <Box
@@ -55,17 +51,38 @@ const ChatScreen = () => {
         </AppBar>
 
         <Box backgroundColor='#F5f5f5' height="82vh" padding="16px"  sx={{ overflowY: "auto", position: "relative" }}>
-            <MessageCard text="Hi John" date="122333" direction="end"/>
-            <MessageCard text="Hi John" date="122333" direction="start"/>
+            { loading? 
+                <Typography>Loading chats...</Typography>: 
+                messages.map(msg => {
+                    return <MessageCard key={msg.createdAt} text={msg.text} date={dateFormater(msg.createdAt)} direction={ msg.receiverId === Number(id) ? "end" : "start" } />
+                })
+            }
         </Box>
-        <TextField 
-            sx={{marginTop: "16px", position: 'absolute'}}
-            placeholder='Enter your message'
-            variant='standard'
-            fullWidth
-            multiline
-            rows={2}
-        />
+        <Box 
+           sx={{display: 'flex', flexDirection: "row", alignItems: 'center', justifyContent:"space-between"}} 
+        >
+            <TextField 
+                sx={{marginTop: "16px", position: 'relative', padding: '8px'}}
+                placeholder='Enter your message'
+                variant='standard'
+                fullWidth
+                multiline
+                rows={2}
+                value={text}
+                onChange={e=>setText(e.target.value)}
+            />
+            <SendIcon sx={{ cursor: 'pointer', marginRight: '10px' }} fontSize="large" onClick={
+                () => { 
+                    sendMessage({
+                        variables: {
+                            receiverId: Number(id), 
+                            text: text
+                        }
+                    })
+                    
+                }}
+            />
+        </Box>
     </Box>
   )
 }
