@@ -11,11 +11,11 @@ import { GraphQLWsLink } from '@apollo/client/link/subscriptions'
 import { createClient } from 'graphql-ws'
 
 const httpLink = new HttpLink({
-  uri: 'http://localhost:4000/graphql'
+  uri: 'https://chat-app-graphql-server.herokuapp.com/graphql'
 })
 
 const wsLink = new GraphQLWsLink(createClient({
-  uri: 'ws://localhost:4000/graphql'
+  url: 'wss://chat-app-graphql-server.herokuapp.com/graphql'
 })) 
 
 const authLink = setContext((_, { headers }) => { 
@@ -56,7 +56,4 @@ root.render(
   </React.StrictMode>
 );
 
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
 reportWebVitals();
