@@ -3,7 +3,7 @@ import { Box, Typography, Divider, Stack } from '@mui/material'
 import ProfileCard from './ProfileCard'
 import { Logout } from '@mui/icons-material'
 
-const SideBar = () => {
+const SideBar = ({ setLoggedIn }) => {
   const users = [ 
     {
       id:1, name:"Daniel"
@@ -12,7 +12,7 @@ const SideBar = () => {
       id:2, name:"John"
     }
   ]
-
+  
   return (
     <Box
       backgroundColor="#F7F7F7"
@@ -25,7 +25,11 @@ const SideBar = () => {
         justifyContent="space-between"
       >
         <Typography variant="h6">Chat</Typography>
-        <Logout />
+        <Logout onClick={() => { 
+          localStorage.removeItem('token') 
+          setLoggedIn(false)
+        }}
+        />
       </Stack>
       <Divider/>
       {

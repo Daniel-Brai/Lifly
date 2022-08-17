@@ -5,12 +5,12 @@ import Welcome from '../../components/Chat/Welcome'
 import { Routes, Route } from 'react-router-dom'
 import ChatScreen from '../../components/Chat/ChatScreen'
 
-const Home = () => {
+const Home = ({ setLoggedIn }) => {
   return (
     <Box
       display='flex'
     >
-        <SideBar/>
+        <SideBar setLoggedIn={setLoggedIn}/>
         <Routes>
           <Route path= '/' element={<Welcome />} />
           <Route path= '/users/:id/:name' element={<ChatScreen />} />

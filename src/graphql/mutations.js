@@ -9,3 +9,11 @@ mutation SignUpUser($newUser: CREATE_USER!) {
     }
   }
 `
+
+export const SIGNIN_USER = gql`
+mutation SignIn($userSignIn: READ_USER!) {
+    signInUser(userSignIn: $userSignIn) {
+      token
+    }
+  }
+`

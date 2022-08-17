@@ -1,22 +1,29 @@
 import React, { useState, useRef } from 'react'
 import { Box, Alert, Card, Stack, Typography, Button, TextField, CircularProgress } from '@mui/material'
 import { useMutation } from '@apollo/client'
-import { SIGNUP_USER } from '../../graphql/mutations'
+import { SIGNUP_USER, SIGNIN_USER } from '../../graphql/mutations'
 
-const AuthForm = () => {
+const AuthForm = ({ setLoggedIn }) => {
     const [ login, setLogin ] = useState(true)
     const [ formData, setFormData ] = useState({})
     const authForm = useRef(null)
     const [signupUser, { data: signupData, loading:l1, error: e1 }] = useMutation(SIGNUP_USER)
+    const [signinUser, { data: signinData, loading:l2, error: e2 }] = useMutation(SIGNIN_USER, {
+        onCompleted(data) { 
+            localStorage.setItem('token', data.signInUser.token)
+            setLoggedIn(true)
+        }
+    })
 
-    if (l1) {
+    if (l1 || l2) {
         return (
-            <Box sx={{ display: 'flex', height: '100vh', alignItems: 'center', justifyContent: 'center'}}>
+            <Box textAlign="center" sx={{ display: 'flex', height: '100vh', alignItems: 'center', justifyContent: 'center'}}>
                 <CircularProgress />
                 <Typography variant="h6">Authenticating....</Typography>
             </Box>
         )
     }
+
     const handleChange = (e) => {
         setFormData(
             {
@@ -29,7 +36,11 @@ const AuthForm = () => {
     const handleSubmit = (e) => {
         e.preventDefault()
         if (login) {
-
+            signinUser({
+                variables: {
+                    userSignIn: formData
+                }
+            })
         } else {
             signupUser({
                 variables: {
@@ -62,6 +73,13 @@ const AuthForm = () => {
                     e1 && <Alert severity='error'>{e1.message}</Alert>
                 }
 
+                {
+                    signinData && <Alert severity='success'>Sign in Successful!</Alert>
+                }
+                {
+                    e2 && <Alert severity='error'>{e2.message}</Alert>
+                }
+
                 <Typography variant="h4" sx={{marginBottom: "8px"}}>
                     Welcome to Lifly
                 </Typography>
@@ -72,6 +90,7 @@ const AuthForm = () => {
                         label="Your name"
                         variant="outlined"
                         onChange={ handleChange }
+                        required
                    />
                 }
                 <TextField 
@@ -80,6 +99,7 @@ const AuthForm = () => {
                     label="E-mail"
                     variant="outlined"
                     onChange={ handleChange }
+                    required
                 />
                 <TextField 
                     name="password"
@@ -87,6 +107,7 @@ const AuthForm = () => {
                     label="Password"
                     variant="outlined"
                     onChange={ handleChange }
+                    required
                 />
                 <Button variant="outlined" type="submit">
                     {
