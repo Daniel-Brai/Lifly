@@ -12,12 +12,13 @@ const ChatScreen = () => {
   const { id, name } = useParams()
   const [text, setText] = useState("")
   const [messages, setMessages] = useState([])
-  const { data, loading, error } = useQuery(GET_USER_MESSAGES, {
+  const { data: msgData, loading, error } = useQuery(GET_USER_MESSAGES, {
     variables: { 
         receiverId: Number(id)
     },
     onCompleted(data) {
         setMessages(data.messagesByUser)
+        return msgData
     }
   })
 
@@ -31,7 +32,7 @@ const ChatScreen = () => {
     onSubscriptionData({ subscriptionData: { data } }) {
         // console.log(data)
         setMessages((prevMsgs) => [...prevMsgs, data.messageAdded])
-
+        return subData
     }
   })
 
