@@ -11,11 +11,11 @@ import { GraphQLWsLink } from '@apollo/client/link/subscriptions'
 import { createClient } from 'graphql-ws'
 
 const httpLink = new HttpLink({
-  uri: 'https://chat-app-graphql-server.herokuapp.com/graphql'
+  uri: 'https://web-production-f7dd3.up.railway.app/graphql'
 })
 
 const wsLink = new GraphQLWsLink(createClient({
-  url: 'wss://chat-app-graphql-server.herokuapp.com/graphql'
+  url: 'wss://web-production-f7dd3.up.railway.app/graphql'
 })) 
 
 const authLink = setContext((_, { headers }) => { 
